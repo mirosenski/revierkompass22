@@ -6,6 +6,7 @@ import { WizardProgress } from "./WizardProgress";
 import { Step1Address, Step2Selection, Step3Results } from "./steps";
 import { useWizardStore, selectWizardProgress } from "@/stores/wizard";
 import { useRouteCalculation } from "@/services/wizard";
+import { WizardMapPanel } from "./WizardMapPanel";
 
 export function WizardHome() {
 	const wizardId = useId();
@@ -77,15 +78,15 @@ export function WizardHome() {
 							)}
 						</div>
 
-						{/* Right Column - Map */}
+						{/* Right Column - WizardMapPanel */}
 						<div className="lg:col-span-2">
-							<Card className="h-[600px] backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-white/20 overflow-hidden">
-								<MapView
-									startCoordinates={startCoords}
-									destinations={destinations}
-									routes={routeResults}
-								/>
-							</Card>
+							<WizardMapPanel
+								currentStep={currentStep}
+								startCoords={startCoords}
+								selectedReviere={selectedReviere}
+								routeResults={routeResults}
+								calculationStatus={calculationStatus}
+							/>
 						</div>
 					</div>
 				</AnimatePresence>
