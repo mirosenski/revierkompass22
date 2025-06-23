@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Wifi, WifiOff, Layers, Navigation, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Wifi, WifiOff, Layers, Navigation } from "lucide-react";
 import { Button } from "./button";
 import { Card } from "./card";
 import type { RouteResult } from "@/stores/wizard";
@@ -321,11 +321,17 @@ export function EnhancedMapView({
 	useEffect(() => {
 		if (!map.current || !mapLoaded || routes.length === 0) return;
 
-		// Remove existing route layers
+		// Remove existing route layers and sources in correct order
 		routes.forEach((_, index) => {
+			// Remove outline layer first (it references the source)
+			if (map.current!.getLayer(`route-${index}-outline`)) {
+				map.current!.removeLayer(`route-${index}-outline`);
+			}
+			// Then remove main route layer
 			if (map.current!.getLayer(`route-${index}`)) {
 				map.current!.removeLayer(`route-${index}`);
 			}
+			// Finally remove the source
 			if (map.current!.getSource(`route-${index}`)) {
 				map.current!.removeSource(`route-${index}`);
 			}
@@ -336,68 +342,59 @@ export function EnhancedMapView({
 			if (route.geometry && route.geometry.coordinates.length > 0) {
 				const routeColor = getRouteColor(index);
 				
-				map.current!.addSource(`route-${index}`, {
-					type: 'geojson',
-					data: {
-						type: 'Feature',
-						properties: {},
-						geometry: route.geometry as any
-					}
-				});
+				// Check if source already exists before adding
+				if (!map.current!.getSource(`route-${index}`)) {
+					map.current!.addSource(`route-${index}`, {
+						type: 'geojson',
+						data: {
+							type: 'Feature',
+							properties: {},
+							geometry: route.geometry as any
+						}
+					});
+				}
 
 				// Add route line with gradient effect
-				map.current!.addLayer({
-					id: `route-${index}`,
-					type: 'line',
-					source: `route-${index}`,
-					layout: {
-						'line-join': 'round',
-						'line-cap': 'round'
-					},
-					paint: {
-						'line-color': routeColor,
-						'line-width': 5,
-						'line-opacity': 0.8,
-						'line-blur': 1
-					}
-				});
+				if (!map.current!.getLayer(`route-${index}`)) {
+					map.current!.addLayer({
+						id: `route-${index}`,
+						type: 'line',
+						source: `route-${index}`,
+						layout: {
+							'line-join': 'round',
+							'line-cap': 'round'
+						},
+						paint: {
+							'line-color': routeColor,
+							'line-width': 5,
+							'line-opacity': 0.8,
+							'line-blur': 1
+						}
+					});
+				}
 
 				// Add route outline for better visibility
-				map.current!.addLayer({
-					id: `route-${index}-outline`,
-					type: 'line',
-					source: `route-${index}`,
-					layout: {
-						'line-join': 'round',
-						'line-cap': 'round'
-					},
-					paint: {
-						'line-color': '#ffffff',
-						'line-width': 7,
-						'line-opacity': 0.4
-					}
-				}, `route-${index}`);
+				if (!map.current!.getLayer(`route-${index}-outline`)) {
+					map.current!.addLayer({
+						id: `route-${index}-outline`,
+						type: 'line',
+						source: `route-${index}`,
+						layout: {
+							'line-join': 'round',
+							'line-cap': 'round'
+						},
+						paint: {
+							'line-color': '#ffffff',
+							'line-width': 7,
+							'line-opacity': 0.4
+						}
+					}, `route-${index}`);
+				}
 			}
 		});
 	}, [mapLoaded, routes, getRouteColor]);
 
 	// Map control functions
-	const handleZoomIn = () => {
-		map.current?.zoomIn({ duration: 300 });
-	};
-
-	const handleZoomOut = () => {
-		map.current?.zoomOut({ duration: 300 });
-	};
-
-	const handleResetRotation = () => {
-		map.current?.easeTo({ 
-			bearing: 0, 
-			pitch: 45, 
-			duration: 500 
-		});
-	};
-
 	const handleStyleChange = (newStyle: 'light' | 'dark' | 'satellite') => {
 		if (map.current && newStyle !== currentStyle) {
 			setCurrentStyle(newStyle);
@@ -435,7 +432,7 @@ export function EnhancedMapView({
 					</Card>
 
 					{/* Map style controls */}
-					<Card className="absolute top-4 right-4 p-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-white/20">
+					<Card className="absolute top-4 right-16 p-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-white/20">
 						<div className="flex gap-1">
 							<Button
 								variant={currentStyle === 'light' ? 'default' : 'ghost'}
@@ -467,42 +464,9 @@ export function EnhancedMapView({
 						</div>
 					</Card>
 
-					{/* Enhanced zoom controls */}
-					<Card className="absolute bottom-4 right-4 p-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-white/20">
-						<div className="flex flex-col gap-1">
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={handleZoomIn}
-								className="h-8 w-8 p-0"
-								title="Zoom in"
-							>
-								<ZoomIn className="w-4 h-4" />
-							</Button>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={handleZoomOut}
-								className="h-8 w-8 p-0"
-								title="Zoom out"
-							>
-								<ZoomOut className="w-4 h-4" />
-							</Button>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={handleResetRotation}
-								className="h-8 w-8 p-0"
-								title="Reset rotation"
-							>
-								<RotateCcw className="w-4 h-4" />
-							</Button>
-						</div>
-					</Card>
-
 					{/* Map info overlay */}
 					{(bearing !== 0 || pitch !== 45) && (
-						<Card className="absolute bottom-4 left-4 p-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-white/20">
+						<Card className="absolute bottom-2 left-2 px-1.5 py-0.5 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-white/20">
 							<div className="flex items-center gap-4 text-xs">
 								<div className="flex items-center gap-1">
 									<Navigation className="w-3 h-3" />
@@ -517,7 +481,7 @@ export function EnhancedMapView({
 				</>
 			)}
 
-			{/* Custom CSS for enhanced popups */}
+			{/* Custom CSS for enhanced popups and controls */}
 			<style>{`
 				.custom-popup .maplibregl-popup-content {
 					border-radius: 12px;
@@ -541,6 +505,16 @@ export function EnhancedMapView({
 				
 				.dark .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
 					border-top-color: rgba(17, 24, 39, 0.95);
+				}
+
+				.maplibregl-ctrl-attrib {
+					font-size: 10px;
+					padding: 2px 4px;
+				}
+
+				.maplibregl-ctrl-top-right {
+					top: 4px;
+					right: 4px;
 				}
 			`}</style>
 		</div>
