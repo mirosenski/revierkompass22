@@ -1,0 +1,33 @@
+/* src/styles/tokens.css */
+:root {
+	/* Brand */
+	--rk-primary-50: 236 100% 97%;
+	--rk-primary-100: 233 100% 94%;
+	--rk-primary-500: 234 100% 62%; /* Brand-Blau */
+	--rk-primary-700: 234 85% 49%;
+
+	/* Neutrals (grau) */
+	--rk-gray-50: 0 0% 100%;
+	--rk-gray-100: 218 23% 97%;
+	--rk-gray-900: 222 47% 11%;
+
+	/* Radius & Shadows */
+	--rk-radius-sm: 0.25rem;
+	--rk-radius-md: 0.5rem;
+	--rk-radius-lg: 1rem;
+
+	--rk-shadow-xs: 0 1px 2px 0 hsl(var(--rk-gray-900) / 0.04);
+	--rk-shadow-sm: 0 1px 3px 0 hsl(var(--rk-gray-900) / 0.07), 0 1px 2px 0
+		hsl(var(--rk-gray-900) / 0.05);
+}
+
+/* Dark-Mode – überschreibt nur, was sich ändert */
+@media (prefers-color-scheme: dark) {
+	:root:not(.light),
+	.dark {
+		--rk-gray-50: 222 47% 11%;
+		--rk-gray-900: 0 0% 98%;
+		/* Beispielhafte Primär-Töne */
+		--rk-primary-500: 234 100% 72%;
+	}
+}

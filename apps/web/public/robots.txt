@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Sitemap (wenn verfügbar)
+# Sitemap: https://yourdomain.com/sitemap.xml
+
+# Disallow admin areas (falls vorhanden)
+Disallow: /admin/
+Disallow: /api/
+
+# Allow all other content
+Allow: / 

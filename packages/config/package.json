@@ -1,0 +1,15 @@
+{
+	"name": "@revierkompass/config",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"files": [
+		"*.js",
+		"*.json",
+		"*.ts"
+	],
+	"exports": {
+		"./eslint": "./eslint.config.js",
+		"./typescript": "./tsconfig.json"
+	}
+}

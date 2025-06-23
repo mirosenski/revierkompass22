@@ -1,0 +1,28 @@
+{
+  "name": "revierkompass",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "test:ui": "turbo run test:ui",
+    "e2e": "turbo run e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build --filter=./packages/* && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@turbo/gen": "^1.13.2",
+    "turbo": "^1.13.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18"
+  }
+}
