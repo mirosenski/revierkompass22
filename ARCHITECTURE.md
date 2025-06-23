@@ -51,7 +51,7 @@ The codebase is organized as a monorepo using pnpm workspaces and managed by Tur
 
 - **`apps/web`**: The main Next.js application that consumes all the packages. It handles page rendering, routing, and the overall application structure.
 - **`packages/api-contracts`**: Defines the data structures and validation schemas (using Zod) for all external and internal API communication. This ensures type safety across the entire stack.
-- **`packages/data`**: Contains the raw and processed data for police stations (`cleaned_police_data.csv`), along with scripts to parse and prepare this data for the application.
+- **`packages/data`**: Contains the raw and processed data for police stations (`polizei-adressen.csv`), along with scripts to parse and prepare this data for the application.
 - **`packages/routing`**: Abstracts the logic for calculating routes. It provides a unified interface to query both OSRM and Valhalla, allowing for parallel route calculations and fallback mechanisms.
 - **`packages/ui`**: A collection of shared, stateless React components styled with Tailwind CSS, ensuring a consistent look and feel across the application.
 

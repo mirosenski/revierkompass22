@@ -25,7 +25,7 @@ export async function loadPoliceData(): Promise<{ praesidien: Praesidium[], revi
   }
 
   try {
-    const response = await fetch('/data/cleaned_police_data.csv');
+    const response = await fetch('/data/polizei-adressen.csv');
     if (!response.ok) {
       throw new Error(`Failed to load data: ${response.statusText}`);
     }

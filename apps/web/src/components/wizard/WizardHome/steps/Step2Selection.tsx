@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Shield, ArrowLeft, Search, Building2, MapPin, Zap, Target } from "lucide-react";
+import { ArrowLeft, Search, Building2, MapPin, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useWizardStore, type Praesidium } from "@/stores/wizard";
 import { usePraesidienSearch, useReviereByPraesidium } from "@/services/wizard";
-import { EnhancedMapView } from "@/components/ui/EnhancedMapView";
 import { VirtualizedHierarchy } from "@/components/ui/VirtualizedHierarchy";
 
 export function Step2Selection() {
@@ -21,11 +20,9 @@ export function Step2Selection() {
 		praesidium,
 		choosePraesidium,
 		setAvailableReviere,
-		startCoords,
 	} = useWizardStore();
 
 	const [searchQuery, setSearchQuery] = useState(query);
-	const [showMap, setShowMap] = useState(false);
 
 	// React Query für Praesidien-Suche
 	const { data: praesidien = [], isLoading: isLoadingPraesidien } =
@@ -59,19 +56,6 @@ export function Step2Selection() {
 		console.log("Reviere neu geordnet:", revierIds);
 	};
 
-	// Mock-Koordinaten für die Karte (sollte aus dem Store kommen)
-	const mockStartCoords = {
-		lat: startCoords?.[1] || 48.7758,
-		lng: startCoords?.[0] || 9.1829,
-		name: "Ihre Startadresse",
-	};
-
-	const mockTargetCoords = selectedReviere.map((revier) => ({
-		lat: 48.7758 + Math.random() * 0.1, // Mock-Koordinaten
-		lng: 9.1829 + Math.random() * 0.1,
-		name: revier.name,
-	}));
-
 	return (
 		<motion.div
 			initial={{ opacity: 0, x: 20 }}
@@ -80,66 +64,6 @@ export function Step2Selection() {
 			transition={{ duration: 0.3 }}
 			className="space-y-6"
 		>
-			{/* Header Card */}
-			<Card className="p-6 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-white/20 shadow-xl">
-				<div className="flex items-center gap-3 mb-4">
-					<div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg">
-						<Shield className="h-6 w-6 text-white" />
-					</div>
-					<div>
-						<h3 className="font-bold text-xl text-gray-900 dark:text-gray-100">
-							Polizeireviere auswählen
-						</h3>
-						<p className="text-sm text-gray-600 dark:text-gray-400">
-							Wählen Sie Ihre Ziele für die Routenoptimierung ({selectedReviere.length} ausgewählt)
-						</p>
-					</div>
-				</div>
-
-				{/* Map Toggle */}
-				<div className="flex items-center justify-between mb-4">
-					<div className="flex items-center gap-2">
-						<Target className="h-4 w-4 text-blue-600" />
-						<span className="text-sm font-medium">Live-Vorschau</span>
-					</div>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => setShowMap(!showMap)}
-						className="hover:bg-blue-50 dark:hover:bg-blue-900/20"
-					>
-						{showMap ? "Karte ausblenden" : "Karte anzeigen"}
-					</Button>
-				</div>
-
-				{/* Live Preview Map */}
-				<AnimatePresence>
-					{showMap && (
-						<motion.div
-							initial={{ opacity: 0, height: 0 }}
-							animate={{ opacity: 1, height: "auto" }}
-							exit={{ opacity: 0, height: 0 }}
-							transition={{ duration: 0.3 }}
-							className="mb-6"
-						>
-							<EnhancedMapView
-								startCoordinates={[mockStartCoords.lng, mockStartCoords.lat]}
-								destinations={mockTargetCoords.map((target, index) => ({
-									id: `target-${index}`,
-									name: target.name,
-									coordinates: [target.lng, target.lat] as [number, number],
-									address: target.name
-								}))}
-								routes={[]}
-								showControls={true}
-								style="light"
-								className="w-full h-96 rounded-xl"
-							/>
-						</motion.div>
-					)}
-				</AnimatePresence>
-			</Card>
-
 			{/* Selection Card */}
 			<Card className="p-6 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-white/20 shadow-xl">
 				{/* Praesidium Selection */}

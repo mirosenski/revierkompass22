@@ -95,7 +95,7 @@ export function processPoliceData(csvData: RawPoliceData[]): { praesidien: Praes
   };
 }
 
-// Raw CSV data from cleaned_police_data.csv
+// Raw CSV data from polizei-adressen.csv
 export const rawPoliceData: RawPoliceData[] = [
   // Will be populated from the CSV file
 ];
