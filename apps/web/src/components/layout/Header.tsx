@@ -88,6 +88,11 @@ export function Header() {
 					<div className="flex items-center">
 						<a
 							href="/"
+							onClick={() => {
+								// Clear localStorage and reload for fresh start
+								localStorage.removeItem("revierkompass-wizard");
+								// Let the normal navigation happen
+							}}
 							className="flex items-center gap-3 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md"
 							aria-label="RevierKompass - Zur Startseite"
 						>

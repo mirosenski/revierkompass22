@@ -20,7 +20,14 @@ export function AppBreadcrumb({ items = [], current }: BreadcrumbProps) {
 				<Breadcrumb className="py-3">
 					<BreadcrumbList>
 						<BreadcrumbItem>
-							<BreadcrumbLink href="/" className="flex items-center gap-1.5 text-sm">
+							<BreadcrumbLink 
+								href="/" 
+								onClick={() => {
+									// Clear localStorage for fresh start
+									localStorage.removeItem("revierkompass-wizard");
+								}}
+								className="flex items-center gap-1.5 text-sm"
+							>
 								<Home className="h-3.5 w-3.5" />
 								<span className="hidden sm:inline">Start</span>
 							</BreadcrumbLink>

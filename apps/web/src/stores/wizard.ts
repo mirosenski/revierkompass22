@@ -113,7 +113,6 @@ interface WizardState {
 	nextStep: () => void;
 	previousStep: () => void;
 	goToStep: (step: number) => void;
-	reset: () => void;
 	isStepValid: (step: number) => boolean;
 	canProceed: (step: number) => boolean;
 	validateStep: (step: number) => boolean;
@@ -136,7 +135,7 @@ export const useWizardStore = create<WizardState>()(
 	devtools(
 		persist(
 			subscribeWithSelector(
-				immer((set, get) => ({
+				immer<WizardState>((set, get) => ({
 					...initialState,
 
 					setStart: (addr, coords) =>
@@ -236,8 +235,6 @@ export const useWizardStore = create<WizardState>()(
 							state.currentStep = Math.max(1, Math.min(3, step));
 						}),
 
-					reset: () => set(() => initialState),
-
 					isStepValid: (step) => get().validateStep(step),
 
 					canProceed: (step) => {
@@ -274,9 +271,15 @@ export const useWizardStore = create<WizardState>()(
 				partialize: (state) => ({
 					startAddress: state.startAddress,
 					startCoords: state.startCoords,
+					addressValidation: state.addressValidation,
 					query: state.query,
+					searchResults: state.searchResults,
 					praesidium: state.praesidium,
 					selectedReviere: state.selectedReviere,
+					availableReviere: state.availableReviere,
+					routeResults: state.routeResults,
+					calculationStatus: state.calculationStatus,
+					selectedRoute: state.selectedRoute,
 					currentStep: state.currentStep,
 					searchMode: state.searchMode,
 					selectionMode: state.selectionMode,

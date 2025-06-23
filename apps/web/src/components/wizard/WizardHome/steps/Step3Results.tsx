@@ -1,25 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-	Route,
-	Clock,
 	Copy,
 	Loader2,
-	Sparkles,
 	FileText,
 	FileSpreadsheet,
 	Share,
 	Printer,
-	Zap,
-	Target,
-	Map,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useWizardStore } from "@/stores/wizard";
 import { useExportRoutes, formatDistance, formatDuration } from "@/services/wizard";
 import type { RouteResult } from "@/stores/wizard";
-import { EnhancedMapView } from "@/components/ui/EnhancedMapView";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -37,8 +29,6 @@ interface Step3ResultsProps {
 
 export function Step3Results({ results, loading }: Step3ResultsProps) {
 	const [copied, setCopied] = useState(false);
-	const [activeProvider, setActiveProvider] = useState("osrm");
-	const { reset } = useWizardStore();
 	const exportMutation = useExportRoutes();
 
 	const handleCopy = () => {
@@ -108,7 +98,10 @@ export function Step3Results({ results, loading }: Step3ResultsProps) {
 	};
 
 	const handleNewSearch = () => {
-		reset();
+		// Clear localStorage completely
+		localStorage.removeItem("revierkompass-wizard");
+		// Reload the page to reset everything
+		window.location.reload();
 	};
 
 	return (
@@ -211,13 +204,13 @@ export function Step3Results({ results, loading }: Step3ResultsProps) {
 					)}
 				</div>
 			</Card>
-			{/* Neue Routenoptimierung starten */}
+			{/* Neue Zielsuche starten */}
 			<Card className="p-4 backdrop-blur-xl bg-white/80 dark:bg-gray-900/80 border border-white/20">
 				<button
 					onClick={handleNewSearch}
 					className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
 				>
-					Neue Routenoptimierung starten
+					Neue Zielsuche starten
 				</button>
 			</Card>
 		</motion.div>
